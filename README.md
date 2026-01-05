@@ -59,19 +59,21 @@ DAT 配布サーバーのベース URL（共通部分） を指定する項目�
 
 生成される XML の以下の項目に使用されます：
 
-<datVersionURL>（DAT のバージョン情報 .txt）
+    <base_url>\DATのバージョン情報.txt
 
-<datURL>（DAT 本体 .zip）
+    <base_url>\DAT本体.zip
 
-<imURL>（画像フォルダ）
+    <base_url>\画像フォルダ
 
 例：
-DAT を https://example.com/offlinelist/famicom/ に置く場合
+DAT を https://example.com/offlinelist/ に置く場合
 
 json
-"base_url": "https://example.com/offlinelist/famicom/"
+"base_url": "https://example.com/offlinelist/"
 空欄のままでも動作しますが、
 OfflineList の「オンライン更新機能」を使う場合は設定が必要です。
+
+---
 
 ##🧪 exe 化（PyInstaller）
 Python をインストールしていない環境でも使えるように
@@ -93,6 +95,8 @@ dist/
       └ その他 DLL
 generator.exe と同じフォルダに config.json  を置いて使用します。
 
+---
+
 ##📄 ライセンス
 このプロジェクトは MIT License のもとで公開されています。
 詳細は LICENSE を参照してください。
@@ -100,5 +104,6 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ##🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
