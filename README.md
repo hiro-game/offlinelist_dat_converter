@@ -93,7 +93,7 @@ exe を作成することができます。
    bash
    ```
    pyinstaller --noconsole generator.py
-```
+   ```
 生成物は以下に出力されます：
 
 コード
@@ -114,6 +114,7 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ## 🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
 
