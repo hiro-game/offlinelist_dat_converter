@@ -53,6 +53,26 @@ Shift-JIS / UTF-8 を自動判別して読み込み
 
 OfflineList でそのまま読み込める DAT を生成
 
+🌐 config.json の base_url について
+base_url は、OfflineList の DAT 更新機能で使用される
+DAT 配布サーバーのベース URL（共通部分） を指定する項目です。
+
+生成される XML の以下の項目に使用されます：
+
+<datVersionURL>（DAT のバージョン情報 .txt）
+
+<datURL>（DAT 本体 .zip）
+
+<imURL>（画像フォルダ）
+
+例：
+DAT を https://example.com/offlinelist/famicom/ に置く場合
+
+json
+"base_url": "https://example.com/offlinelist/famicom/"
+空欄のままでも動作しますが、
+OfflineList の「オンライン更新機能」を使う場合は設定が必要です。
+
 🧪 exe 化（PyInstaller）
 Python をインストールしていない環境でも使えるように
 exe を作成することができます。
@@ -79,4 +99,6 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 
 🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
+Microsoft Copilot によって自動生成されたものです。
+
 Microsoft Copilot によって自動生成されたものです。
