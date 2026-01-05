@@ -61,18 +61,18 @@ DAT 配布サーバーのベース URL（共通部分） を指定する項目�
 
 生成される XML の以下の項目に使用されます：
 
-* DATのバージョン情報
-  <base\_url>\\game.txt
-* DAT本体
-  <base\_url>\\game.zip
-* 画像フォルダ
-  <base\_url>\\game\\
+* DATのバージョン情報  
+  <base\_url>\\game.txt  
+* DAT本体  
+  <base\_url>\\game.zip  
+* 画像フォルダ  
+  <base\_url>\\game\\  
 
 例：
 DAT を https://example.com/offlinelist/ に置く場合
-
-json
-"base\_url": "https://example.com/offlinelist/"
+  
+json  
+"base\_url": "https://example.com/offlinelist/"  
 
 空欄のままでも動作しますが、
 OfflineList の「オンライン更新機能」を使う場合は設定が必要です。
@@ -83,12 +83,12 @@ OfflineList の「オンライン更新機能」を使う場合は設定が必�
 Python をインストールしていない環境でも使えるように
 exe を作成することができます。
 
-1. PyInstaller のインストール
-   bash
-   pip install pyinstaller
-2. exe の作成（config.json を外部ファイルのまま使う場合）
-   bash
-   pyinstaller --noconsole generator.py
+1. PyInstaller のインストール  
+   bash  
+   pip install pyinstaller  
+2. exe の作成（config.json を外部ファイルのまま使う場合）  
+   bash  
+   pyinstaller --noconsole generator.py  
 
 生成物は以下に出力されます：
 
@@ -109,6 +109,7 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ## 🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
 
