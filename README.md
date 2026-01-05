@@ -34,7 +34,7 @@ pip install beautifulsoup4
 * tkinter（Windows の公式 Python には標準で含まれています）
 
 ## 🚀 実行方法（Python）
-generator.py と config.json を同じフォルダに置き、以下を実行します。
+generator.py と config.json を同じフォルダに置き、以下を実行します。  
 bash
 ```
 python generator.py
@@ -71,10 +71,10 @@ DAT 配布サーバーのベース URL（共通部分） を指定する項目�
 
 例：
 DAT を https://example.com/offlinelist/ に置く場合
-  
-json  
-"base\_url": "https://example.com/offlinelist/"  
-
+json
+```
+"base\_url": "https://example.com/offlinelist/"
+```
 空欄のままでも動作しますが、
 OfflineList の「オンライン更新機能」を使う場合は設定が必要です。
 
@@ -85,23 +85,26 @@ Python をインストールしていない環境でも使えるように
 exe を作成することができます。
 
 1. PyInstaller のインストール  
-   bash  
-   pip install pyinstaller  
-2. exe の作成（config.json を外部ファイルのまま使う場合）  
-   bash  
-   pyinstaller --noconsole generator.py  
-
+   bash
+   ```
+   pip install pyinstaller
+   ```
+3. exe の作成（config.json を外部ファイルのまま使う場合）  
+   bash
+   ```
+   pyinstaller --noconsole generator.py
+```
 生成物は以下に出力されます：
 
-コード  
+コード
 ```
-dist/  
-└ generator/  
-    ├ generator.exe  
-    ├ \_internal/（Python ランタイム）  
-    └ その他 DLL  
-generator.exe と同じフォルダに config.json  を置いて使用します。  
+dist/
+└ generator/
+    ├ generator.exe
+    ├ \_internal/（Python ランタイム）
+    └ その他 DLL
 ```
+generator.exe と同じフォルダに config.json  を置いて使用します。
 ---
 
 ## 📄 ライセンス
@@ -111,6 +114,7 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ## 🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
 
