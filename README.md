@@ -73,7 +73,7 @@ json
 空欄のままでも動作しますが、
 OfflineList の「オンライン更新機能」を使う場合は設定が必要です。
 
-🧪 exe 化（PyInstaller）
+##🧪 exe 化（PyInstaller）
 Python をインストールしていない環境でも使えるように
 exe を作成することができます。
 
@@ -93,12 +93,10 @@ dist/
       └ その他 DLL
 generator.exe と同じフォルダに config.json  を置いて使用します。
 
-📄 ライセンス
+##📄 ライセンス
 このプロジェクトは MIT License のもとで公開されています。
 詳細は LICENSE を参照してください。
 
-🙏 開発について
+##🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
-Microsoft Copilot によって自動生成されたものです。
-
 Microsoft Copilot によって自動生成されたものです。
