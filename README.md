@@ -34,8 +34,8 @@ pip install beautifulsoup4
 * tkinter（Windows の公式 Python には標準で含まれています）
 
 ## 🚀 実行方法（Python）
-generator.py と config.json を同じフォルダに置き、以下を実行します。
-bash
+generator.py と config.json を同じフォルダに置き、以下を実行します。  
+bash  
 python generator.py
 
 GUI が起動し、CSV/XML の変換が行えます。
@@ -109,5 +109,6 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ## 🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
