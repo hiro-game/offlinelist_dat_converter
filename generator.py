@@ -154,6 +154,15 @@ def build_configuration_xml_string(config: dict,
         datCode=dat_code,
     )
 
+# -------------------------------
+# バージョンファイル生成
+# -------------------------------
+def create_version_file(output_dir: str, dat_code: str):
+    today = datetime.now().strftime("%Y%m%d")
+    version_path = os.path.join(output_dir, f"{dat_code}.txt")
+    with open(version_path, "w", encoding="utf-8") as f:
+        f.write(today)
+    return version_path
 
 # -------------------------------
 # CSV → XML 全体生成
@@ -344,7 +353,9 @@ class OfflineListGUI:
                 background="#ffffe0",
                 relief="solid",
                 borderwidth=1,
-                font=("Arial", 10)
+                font=("Arial", 10),
+                justify="left",
+                anchor="w"
             )
             label.pack()
 
@@ -364,16 +375,14 @@ class OfflineListGUI:
         tk.Label(self.root, text="datName:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         datName_entry = tk.Entry(self.root, textvariable=self.dat_name_var, width=40)
         datName_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
-        self.add_placeholder(datName_entry, "例：ファミコン")
-        self.ToolTip(datName_entry, "OfflineList の左下リストに表示される名称")
+        self.ToolTip(datName_entry, "例：ファミコン\nOfflineList左下のコンボボックスに表示される名称を入力")
         row += 1
 
         # system
         tk.Label(self.root, text="system:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         system_entry = tk.Entry(self.root, textvariable=self.system_var, width=20)
         system_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
-        self.add_placeholder(system_entry, "例：fc（スペースなし）")
-        self.ToolTip(system_entry, "ゲーム機の名称。imFolder や URL に使用されるためスペース不可")
+        self.ToolTip(system_entry, "例：fc\nゲーム機の略称")
         system_entry.bind("<FocusOut>", self.on_system_focus_out)
         row += 1
 
@@ -381,8 +390,7 @@ class OfflineListGUI:
         tk.Label(self.root, text="imFolder:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         imFolder_entry = tk.Entry(self.root, textvariable=self.im_folder_var, width=40)
         imFolder_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
-        self.add_placeholder(imFolder_entry, "例：fcimg")
-        self.ToolTip(imFolder_entry, "サムネイル画像を格納するフォルダ名")
+        self.ToolTip(imFolder_entry, "例：fcimg\nサムネイル画像のフォルダ名")
         row += 1
 
         # screenshots
@@ -396,9 +404,7 @@ class OfflineListGUI:
         ss_h = tk.Entry(frame_ss, textvariable=self.screenshots_height_var, width=8)
         ss_h.pack(side="left")
 
-        self.add_placeholder(ss_w, "")
-        self.add_placeholder(ss_h, "")
-        self.ToolTip(frame_ss, "サムネイル画像の解像度（幅×高さ）")
+        self.ToolTip(frame_ss, "サムネイル画像の解像度")
         row += 1
 
         # extension
@@ -408,17 +414,16 @@ class OfflineListGUI:
         tk.Label(frame_ext, text=".").pack(side="left")
         ext_entry = tk.Entry(frame_ext, textvariable=self.extension_suffix_var, width=10)
         ext_entry.pack(side="left")
-        self.add_placeholder(ext_entry, "例：nes")
-        self.ToolTip(ext_entry, "ROM の拡張子（nes / smc / gb など）")
+        self.ToolTip(ext_entry, "例：nes\nROMファイルの拡張子")
         row += 1
 
         # datCode
         tk.Label(self.root, text="datCode:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         datCode_entry = tk.Entry(self.root, textvariable=self.dat_code_var, width=20)
         datCode_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
-        self.add_placeholder(datCode_entry, "例：fc")
-        self.ToolTip(datCode_entry, "DAT 更新 URL で使用される識別コード")
+        self.ToolTip(datCode_entry, "例：fc\n更新ファイルのファイル名とフォルダ名")
         row += 1
+
 
         # ファイル選択
         tk.Button(self.root, text="CSV / XML を選択", command=self.select_input).grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
@@ -552,6 +557,8 @@ class OfflineListGUI:
                     extension_suffix=self.extension_suffix_var.get(),
                     dat_code=self.dat_code_var.get(),
                 )
+                output_dir = os.path.dirname(output_path)
+                version_file = create_version_file(output_dir, self.dat_code_var.get())
                 messagebox.showinfo("完了", f"CSV → XML 変換が完了しました。\n\n{output_path}")
 
             elif is_xml(self.input_path):
