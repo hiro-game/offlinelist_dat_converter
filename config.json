@@ -3,6 +3,4 @@
   "infos": "<infos>\n  <title visible=\"false\" inNamingOption=\"true\" default=\"false\" />\n  <publisher visible=\"true\" inNamingOption=\"true\" default=\"true\" />\n  <sourceRom visible=\"true\" inNamingOption=\"true\" default=\"false\" />\n  <location visible=\"true\" inNamingOption=\"true\" default=\"false\" />\n  <comment visible=\"false\" inNamingOption=\"false\" default=\"false\" />\n  <language visible=\"false\" inNamingOption=\"false\" default=\"false\" />\n  <saveType visible=\"false\" inNamingOption=\"false\" default=\"false\" />\n  <romSize visible=\"false\" inNamingOption=\"false\" default=\"false\" />\n</infos>",
   "search": "<search>\n  <to value=\"title\" default=\"true\" auto=\"true\" />\n  <to value=\"publisher\" default=\"false\" auto=\"true\" />\n  <to value=\"sourceRom\" default=\"false\" auto=\"true\" />\n</search>",
   "romTitle": "<romTitle>%n</romTitle>"
-
 }
-
