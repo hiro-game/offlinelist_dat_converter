@@ -207,7 +207,7 @@ def generate_xml_from_csv(csv_path: str,
 
 
 # -------------------------------
-# XML → CSV（BeautifulSoup＋Shift-JIS/UTF-8 対応）
+# XML → CSV（Shift-JIS/UTF-8 自動判別）
 # -------------------------------
 def read_xml_text_auto(xml_path: str) -> str:
     with open(xml_path, "rb") as f:
@@ -222,18 +222,13 @@ def generate_csv_from_xml(xml_path: str) -> str:
     if not xml_path:
         raise ValueError("XML ファイルが指定されていません。")
 
-    # 文字コードを正しく読み込む（Shift-JIS → UTF-8）
     xml_text = read_xml_text_auto(xml_path)
-
-    # ElementTree で XML をパース（BeautifulSoup は使わない）
     root = ET.fromstring(xml_text)
 
-    # <game> タグをすべて取得
     games = root.findall(".//game")
     if not games:
         raise ValueError("<game> タグが見つかりません。")
 
-    # CSV 出力準備
     fieldnames = [
         "imageNumber",
         "releaseNumber",
@@ -261,7 +256,6 @@ def generate_csv_from_xml(xml_path: str) -> str:
         for game in games:
             row = {key: "" for key in fieldnames}
 
-            # <files><romCRC extension="...">XXX</romCRC></files>
             files = game.find("files")
             if files is not None:
                 romcrc = files.find("romCRC")
@@ -269,7 +263,6 @@ def generate_csv_from_xml(xml_path: str) -> str:
                     row["romCRC"] = (romcrc.text or "").strip()
                     row["extension"] = (romcrc.get("extension") or "").strip()
 
-            # 単純タグ
             for tag_name in fieldnames:
                 if tag_name in ("romCRC", "extension"):
                     continue
@@ -306,56 +299,144 @@ class OfflineListGUI:
         self.setup_bindings()
         self.handle_initial_argv()
 
+    # -------------------------------
+    # プレースホルダー
+    # -------------------------------
+    def add_placeholder(self, entry, text):
+        entry.insert(0, text)
+        entry.config(fg="gray")
+
+        def on_focus_in(event):
+            if entry.get() == text:
+                entry.delete(0, "end")
+                entry.config(fg="black")
+
+        def on_focus_out(event):
+            if entry.get() == "":
+                entry.insert(0, text)
+                entry.config(fg="gray")
+
+        entry.bind("<FocusIn>", on_focus_in)
+        entry.bind("<FocusOut>", on_focus_out)
+
+    # -------------------------------
+    # ツールチップ
+    # -------------------------------
+    class ToolTip:
+        def __init__(self, widget, text):
+            self.widget = widget
+            self.text = text
+            self.tip = None
+            widget.bind("<Enter>", self.show)
+            widget.bind("<Leave>", self.hide)
+
+        def show(self, event=None):
+            if self.tip is not None:
+                return
+            x = self.widget.winfo_rootx() + 20
+            y = self.widget.winfo_rooty() + 20
+            self.tip = tw = tk.Toplevel(self.widget)
+            tw.wm_overrideredirect(True)
+            tw.wm_geometry(f"+{x}+{y}")
+            label = tk.Label(
+                tw,
+                text=self.text,
+                background="#ffffe0",
+                relief="solid",
+                borderwidth=1,
+                font=("Arial", 10)
+            )
+            label.pack()
+
+        def hide(self, event=None):
+            if self.tip:
+                self.tip.destroy()
+                self.tip = None
+
+    # -------------------------------
+    # UI 構築
+    # -------------------------------
     def build_ui(self):
         pad = 5
         row = 0
 
+        # datName
         tk.Label(self.root, text="datName:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
-        tk.Entry(self.root, textvariable=self.dat_name_var, width=40).grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
+        datName_entry = tk.Entry(self.root, textvariable=self.dat_name_var, width=40)
+        datName_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
+        self.add_placeholder(datName_entry, "例：ファミコン")
+        self.ToolTip(datName_entry, "OfflineList の左下リストに表示される名称")
         row += 1
 
+        # system
         tk.Label(self.root, text="system:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
-        self.system_entry = tk.Entry(self.root, textvariable=self.system_var, width=20)
-        self.system_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
-        self.system_entry.bind("<FocusOut>", self.on_system_focus_out)
+        system_entry = tk.Entry(self.root, textvariable=self.system_var, width=20)
+        system_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
+        self.add_placeholder(system_entry, "例：fc（スペースなし）")
+        self.ToolTip(system_entry, "ゲーム機の名称。imFolder や URL に使用されるためスペース不可")
+        system_entry.bind("<FocusOut>", self.on_system_focus_out)
         row += 1
 
+        # imFolder
         tk.Label(self.root, text="imFolder:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
-        tk.Entry(self.root, textvariable=self.im_folder_var, width=40).grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
+        imFolder_entry = tk.Entry(self.root, textvariable=self.im_folder_var, width=40)
+        imFolder_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
+        self.add_placeholder(imFolder_entry, "例：fcimg")
+        self.ToolTip(imFolder_entry, "サムネイル画像を格納するフォルダ名")
         row += 1
 
+        # screenshots
         tk.Label(self.root, text="screenshots:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         frame_ss = tk.Frame(self.root)
         frame_ss.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
-        tk.Entry(frame_ss, textvariable=self.screenshots_width_var, width=8).pack(side="left")
+
+        ss_w = tk.Entry(frame_ss, textvariable=self.screenshots_width_var, width=8)
+        ss_w.pack(side="left")
         tk.Label(frame_ss, text=" x ").pack(side="left")
-        tk.Entry(frame_ss, textvariable=self.screenshots_height_var, width=8).pack(side="left")
+        ss_h = tk.Entry(frame_ss, textvariable=self.screenshots_height_var, width=8)
+        ss_h.pack(side="left")
+
+        self.add_placeholder(ss_w, "")
+        self.add_placeholder(ss_h, "")
+        self.ToolTip(frame_ss, "サムネイル画像の解像度（幅×高さ）")
         row += 1
 
+        # extension
         tk.Label(self.root, text="extension:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         frame_ext = tk.Frame(self.root)
         frame_ext.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
         tk.Label(frame_ext, text=".").pack(side="left")
-        tk.Entry(frame_ext, textvariable=self.extension_suffix_var, width=10).pack(side="left")
+        ext_entry = tk.Entry(frame_ext, textvariable=self.extension_suffix_var, width=10)
+        ext_entry.pack(side="left")
+        self.add_placeholder(ext_entry, "例：nes")
+        self.ToolTip(ext_entry, "ROM の拡張子（nes / smc / gb など）")
         row += 1
 
+        # datCode
         tk.Label(self.root, text="datCode:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
-        tk.Entry(self.root, textvariable=self.dat_code_var, width=20).grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
+        datCode_entry = tk.Entry(self.root, textvariable=self.dat_code_var, width=20)
+        datCode_entry.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
+        self.add_placeholder(datCode_entry, "例：fc")
+        self.ToolTip(datCode_entry, "DAT 更新 URL で使用される識別コード")
         row += 1
 
+        # ファイル選択
         tk.Button(self.root, text="CSV / XML を選択", command=self.select_input).grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         self.input_label = tk.Label(self.root, text="未選択", anchor="w", width=50)
         self.input_label.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
         row += 1
 
+        # モード表示
         tk.Label(self.root, text="現在のモード:").grid(row=row, column=0, padx=pad, pady=pad, sticky="e")
         self.mode_label = tk.Label(self.root, textvariable=self.mode_var, anchor="w")
         self.mode_label.grid(row=row, column=1, padx=pad, pady=pad, sticky="w")
         row += 1
 
+        # 変換ボタン
         tk.Button(self.root, text="変換実行", command=self.on_convert).grid(row=row, column=0, columnspan=2, padx=pad, pady=pad)
         row += 1
 
+        # 説明ラベル
         info = tk.Label(
             self.root,
             text=(
@@ -372,12 +453,18 @@ class OfflineListGUI:
 
         self.root.resizable(False, False)
 
+    # -------------------------------
+    # datCode 手動変更検知
+    # -------------------------------
     def setup_bindings(self):
         def on_datcode_change(*args):
             self.dat_code_manual_override = True
 
         self.dat_code_var.trace_add("write", on_datcode_change)
 
+    # -------------------------------
+    # system 入力後の自動設定
+    # -------------------------------
     def on_system_focus_out(self, event):
         system = self.system_var.get().strip()
         if system:
@@ -385,12 +472,18 @@ class OfflineListGUI:
             if not self.dat_code_manual_override:
                 self.dat_code_var.set(system)
 
+    # -------------------------------
+    # exe ドラッグ＆ドロップ対応
+    # -------------------------------
     def handle_initial_argv(self):
         if len(sys.argv) >= 2:
             path = sys.argv[1]
             if os.path.isfile(path) and (is_csv(path) or is_xml(path)):
                 self.set_input_file(path)
 
+    # -------------------------------
+    # ファイル選択
+    # -------------------------------
     def select_input(self):
         path = filedialog.askopenfilename(
             title="CSV または XML ファイルを選択",
@@ -404,6 +497,9 @@ class OfflineListGUI:
         if path:
             self.set_input_file(path)
 
+    # -------------------------------
+    # 入力ファイル設定
+    # -------------------------------
     def set_input_file(self, path: str):
         self.input_path = path
         self.input_label.config(text=os.path.basename(path))
@@ -415,6 +511,9 @@ class OfflineListGUI:
         else:
             self.mode_var.set("未対応の拡張子")
 
+    # -------------------------------
+    # CSV → XML 必須項目チェック
+    # -------------------------------
     def validate_csv_mode_required_fields(self):
         missing = []
         if not self.dat_name_var.get().strip():
@@ -432,6 +531,9 @@ class OfflineListGUI:
             msg = "以下の項目が未入力です:\n\n" + "\n".join(missing)
             raise ValueError(msg)
 
+    # -------------------------------
+    # 変換実行
+    # -------------------------------
     def on_convert(self):
         if not self.input_path:
             messagebox.showerror("エラー", "CSV または XML ファイルが選択されていません。")
@@ -453,7 +555,6 @@ class OfflineListGUI:
                 messagebox.showinfo("完了", f"CSV → XML 変換が完了しました。\n\n{output_path}")
 
             elif is_xml(self.input_path):
-                # XML → CSV：フォームは完全無視
                 output_path = generate_csv_from_xml(self.input_path)
                 messagebox.showinfo("完了", f"XML → CSV 変換が完了しました。\n\n{output_path}")
 
@@ -463,7 +564,9 @@ class OfflineListGUI:
         except Exception as e:
             messagebox.showerror("エラー", f"変換に失敗しました。\n\n{e}")
 
-
+# -------------------------------
+# main
+# -------------------------------
 def main():
     root = tk.Tk()
     app = OfflineListGUI(root)
