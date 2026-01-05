@@ -18,7 +18,7 @@ OfflineList の DAT 形式 XML ファイルから `<game>` 部分を抽出して
 ## 📦 必須ライブラリ（.py のまま使用する場合）
 
 ### ✔ 外部ライブラリ
-```bash
+
 pip install beautifulsoup4
 
 ✔ 標準ライブラリ（インストール不要）
@@ -104,6 +104,7 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ##🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
 
