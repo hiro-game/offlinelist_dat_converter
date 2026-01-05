@@ -60,11 +60,12 @@ DAT 配布サーバーのベース URL（共通部分） を指定する項目�
 
 生成される XML の以下の項目に使用されます：
 
-- <base_url>\DATのバージョン情報.txt
-
-- <base_url>\DAT本体.zip
-
-- <base_url>\画像フォルダ
+- DATのバージョン情報
+    <base_url>\game.txt
+- DAT本体
+    <base_url>\game.zip
+- 画像フォルダ
+    <base_url>\game\
 
 例：
 DAT を https://example.com/offlinelist/ に置く場合
@@ -108,6 +109,7 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ##🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
 
