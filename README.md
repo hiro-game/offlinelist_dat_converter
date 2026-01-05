@@ -70,7 +70,7 @@ DAT 配布サーバーのベース URL（共通部分） を指定する項目�
   <base\_url>\\game\\  
 
 例：
-DAT を https://example.com/offlinelist/ に置く場合
+DAT を https://example.com/offlinelist/ に置く場合  
 json
 ```
 "base\_url": "https://example.com/offlinelist/"
@@ -114,6 +114,7 @@ generator.exe と同じフォルダに config.json  を置いて使用します�
 ## 🙏 開発について
 本ツールの Python コードは、作者が要件を提示し、
 Microsoft Copilot によって自動生成されたものです。
+
 
 
 
